@@ -1,0 +1,50 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    register page
+{% endblock title %}
+{% block body %}
+    <div class="row">
+        <div class="jumbotron">
+            {{ form_start(form_register) }}
+                {{ form_row(form_register.email, {
+                    'label' : 'Entrer une adresse email valide',
+                    'attr':{
+                        'class':'form-control',
+                        'placeholder' : 'Votre adresse email',
+                    }
+                }) }}
+                {{ form_row(form_register.password, {
+                    'label' : 'Entrer votre mot de passe',
+                    'attr':{
+                        'class':'form-control',
+                    }
+                }) }}
+                {{ form_row(form_register.c_password, {
+                    'label' : 'Confirmer votre mot de passe',
+                    'attr':{
+                        'class':'form-control',
+                    }
+                }) }}
+                {{ form_row(form_register.roles, {
+                    'label' : 'Roles',
+                    'attr':{
+                        'class':'form-control',
+                    }
+                }) }}
+                {{ form_row(form_register.groupe, {
+                    'label' : 'Groupe',
+                    'attr':{
+                        'class':'form-control',
+                    }
+                }) }}
+               <div class="mt-2">
+                {{ form_row(form_register.register, {
+                    'attr':{
+                        'class':'form-control btn btn-primary',
+                    }
+                }) }}
+               </div>
+            {{ form_end(form_register) }}
+        </div>
+    </div>
+{% endblock body %}

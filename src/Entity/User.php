@@ -2,13 +2,17 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
+// DON'T forget the following use statement!!!
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
+ * @UniqueEntity("email")
  */
 class User implements UserInterface
 {
@@ -20,14 +24,31 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\Email
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
      */
     private $password;
+
+    /**
+     * @Assert\EqualTo(propertyPath="password", message="Les deux mot de passe ne sont identique")
+     */
+    private $c_password;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $groupe;
 
     public function getId(): ?int
     {
@@ -57,6 +78,28 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getCPassword(): ?string
+    {
+        return $this->c_password;
+    }
+
+    public function setCPassword(string $c_password): self
+    {
+        $this->c_password = $c_password;
+
+        return $this;
+    }
+
+    public function test_equalPass()
+    {
+        if($this->password === $this->c_password){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     /**
      * Returns the roles granted to the user.
      *
@@ -71,8 +114,13 @@ class User implements UserInterface
      *
      * @return (Role|string)[] The user roles
      */
-    public function getRoles(){
-        return ['ROLE_USER'];
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
     /**
@@ -103,5 +151,24 @@ class User implements UserInterface
      */
     public function eraseCredentials(){
         
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getGroupe(): ?string
+    {
+        return $this->groupe;
+    }
+
+    public function setGroupe(string $groupe): self
+    {
+        $this->groupe = $groupe;
+
+        return $this;
     }
 }
